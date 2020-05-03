@@ -1,5 +1,4 @@
-export const mockImage =
-  "https://heliogroup.net/wp-content/uploads/2019/06/FIELD_MARKETING.jpg";
+export const mockImage = "https://source.unsplash.com/random";
 
 export const mockEvents = [
   {

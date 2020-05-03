@@ -1,0 +1,26 @@
+@import "../../styles/colors.scss";
+
+.header {
+  padding: 15px 0;
+  background-color: $primary-dark-green;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  &__inner {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__logo {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  &__links {
+    display: flex;
+    font-size: 20px;
+    > a + a {
+      margin-left: 15px;
+    }
+    .header-link {
+    }
+  }
+}
