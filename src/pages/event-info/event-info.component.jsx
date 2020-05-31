@@ -1,24 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import { Container } from "react-bootstrap";
+import { Link, useParams } from "react-router-dom";
+import { Container, Button } from "react-bootstrap";
 import { FiEdit } from "react-icons/fi";
 
 import { mockImage } from "../../data";
 import { LoadingSpinner } from "../../components";
-import { getEventById } from "../../redux/action-exporter";
+import { getEventById, addUserToEvent } from "../../redux/action-exporter";
 
 import "./event-info.styles.scss";
 
-const EventInfo = ({ getEventById, isEventByIdPending, eventById }) => {
+const EventInfo = ({
+  getEventById,
+  isEventByIdPending,
+  eventById,
+  addUserToEvent
+}) => {
   const { eventId } = useParams();
 
   useEffect(() => {
     getEventById(eventId);
-  }, [eventId]);
-
-  console.log(eventById);
+  }, [getEventById, eventId]);
 
   const {
     eventName,
@@ -53,6 +55,11 @@ const EventInfo = ({ getEventById, isEventByIdPending, eventById }) => {
               <div className="event-info__date event-info__general-information">
                 Event location: <span>{location}</span>
               </div>
+              <div className="event-info__go-to-event">
+                <Button onClick={() => addUserToEvent(eventId)}>
+                  Go To Event
+                </Button>
+              </div>
             </div>
 
             <div className="event-image">
@@ -76,4 +83,6 @@ const mapStateToProps = state => ({
   eventById: state.eventsReducer.eventById
 });
 
-export default connect(mapStateToProps, { getEventById })(EventInfo);
+export default connect(mapStateToProps, { getEventById, addUserToEvent })(
+  EventInfo
+);

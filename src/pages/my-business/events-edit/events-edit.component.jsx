@@ -1,30 +1,47 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { Container, Button } from "react-bootstrap";
 
-import { DefaultInput } from "../../../components";
+import { DefaultInput, InputDatePicker } from "../../../components";
 import {
   getEventById,
   putEvent,
-  postEvent
+  postEvent,
+  clearRequestStatus
 } from "../../../redux/action-exporter";
 
 import "./events.edit.styles.scss";
 
-const EventEdit = ({ getEventById, eventById, postEvent, putEvent }) => {
+const EventEdit = ({
+  getEventById,
+  eventById,
+  postEvent,
+  putEvent,
+  eventRequestStatus,
+  clearRequestStatus
+}) => {
   const { eventId } = useParams();
+  const history = useHistory();
 
   const [name, setName] = useState("");
-  const [date, setDate] = useState(new Date().toISOString());
+  const [fullTime, setFullTime] = useState({ eDate: "", eTime: "" });
   const [description, setDescription] = useState("");
   const [placesTotal, setPlacesTotal] = useState("");
   const [availablePlaces, setAvailablePlaces] = useState("");
   const [location, setLocation] = useState("");
 
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const { eDate, eTime } = fullTime;
+
   useEffect(() => {
     if (eventId !== "create") {
       getEventById(eventId);
+    }
+  }, [getEventById, eventId]);
+
+  useEffect(() => {
+    if (eventId !== "create") {
       const {
         eventName,
         eventDate,
@@ -33,21 +50,48 @@ const EventEdit = ({ getEventById, eventById, postEvent, putEvent }) => {
         placesAvailable,
         location
       } = eventById;
+      let dateSplit = eventDate && eventDate.split(" ");
 
       setName(eventName);
-      setDate(eventDate);
+      setFullTime(fullTime => ({
+        ...fullTime,
+        eDate: dateSplit[0],
+        eTime: dateSplit[1]
+      }));
       setDescription(description);
       setPlacesTotal(totalPlaces);
       setAvailablePlaces(placesAvailable);
       setLocation(location);
     }
-  }, [eventById.eventName]);
+  }, [eventId, eventById]);
+
+  useEffect(
+    () =>
+      setButtonDisabled(
+        name === "" ||
+          eDate === "" ||
+          eTime === "" ||
+          description === "" ||
+          placesTotal === "" ||
+          availablePlaces === "" ||
+          location === ""
+      ),
+    [name, eDate, eTime, description, placesTotal, availablePlaces, location]
+  );
+
+  useEffect(() => {
+    if (eventRequestStatus === 200 || eventRequestStatus === 201) {
+      history.push("/events");
+    }
+  }, [history, eventRequestStatus]);
+
+  useEffect(() => () => clearRequestStatus(), [clearRequestStatus]);
 
   const editEventHandler = () => {
     if (eventId === "create") {
       postEvent(
         name,
-        date,
+        `${eDate} ${eTime}`,
         description,
         placesTotal,
         availablePlaces,
@@ -57,7 +101,7 @@ const EventEdit = ({ getEventById, eventById, postEvent, putEvent }) => {
       putEvent(
         eventId,
         name,
-        date,
+        `${eDate} ${eTime}`,
         description,
         placesTotal,
         availablePlaces,
@@ -76,16 +120,19 @@ const EventEdit = ({ getEventById, eventById, postEvent, putEvent }) => {
           <DefaultInput
             label="Event name"
             type="name"
-            placeholder="Event dame..."
+            placeholder="Event name..."
             onChangeHandler={e => setName(e.target.value)}
             inputValue={name}
           />
-          <DefaultInput
-            label="Event date"
-            type="name"
-            placeholder="Event date..."
-            onChangeHandler={e => setDate(e.target.value)}
-            inputValue={date}
+          <InputDatePicker
+            datePickHandler={e =>
+              setFullTime({ ...fullTime, eDate: e.target.value })
+            }
+            timePickHandler={e =>
+              setFullTime({ ...fullTime, eTime: e.target.value })
+            }
+            dateValue={eDate}
+            timeValue={eTime}
           />
           <DefaultInput
             label="Event description"
@@ -116,7 +163,11 @@ const EventEdit = ({ getEventById, eventById, postEvent, putEvent }) => {
             inputValue={location}
           />
           <div className="event-edit-container__footer">
-            <Button onClick={editEventHandler} variant="success">
+            <Button
+              disabled={buttonDisabled}
+              onClick={editEventHandler}
+              variant="success"
+            >
               Save
             </Button>
           </div>
@@ -127,9 +178,13 @@ const EventEdit = ({ getEventById, eventById, postEvent, putEvent }) => {
 };
 
 const mapStateToProps = state => ({
-  eventById: state.eventsReducer.eventById
+  eventById: state.eventsReducer.eventById,
+  eventRequestStatus: state.eventsReducer.eventRequestStatus
 });
 
-export default connect(mapStateToProps, { getEventById, postEvent, putEvent })(
-  EventEdit
-);
+export default connect(mapStateToProps, {
+  getEventById,
+  postEvent,
+  putEvent,
+  clearRequestStatus
+})(EventEdit);

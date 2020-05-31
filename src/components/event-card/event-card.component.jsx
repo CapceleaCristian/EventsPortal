@@ -20,8 +20,8 @@ const EventCard = ({
   const { url } = useRouteMatch();
 
   return (
-    <Card style={{ width: "18rem" }}>
-      <Card.Img variant="top" src={mockImage} />
+    <Card className="event-card" style={{ width: "18rem" }}>
+      <Card.Img className="event-card__image" variant="top" src={mockImage} />
       <Card.Body>
         <Card.Title>
           {eventName.length > 20

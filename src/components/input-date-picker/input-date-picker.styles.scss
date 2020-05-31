@@ -1,0 +1,8 @@
+.input-date-picker {
+  &__date,
+  &__time {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+}

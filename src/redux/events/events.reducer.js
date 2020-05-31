@@ -9,9 +9,11 @@ const INITIAL_STATE = {
   eventById: {},
   eventByIdError: {},
 
-  isEventPosting: false,
-  eventPost: {},
-  eventPostError: {}
+  isEventEditing: false,
+  eventEdited: {},
+  eventEditedError: {},
+
+  eventRequestStatus: 0
 };
 
 const EventsReducer = (state = INITIAL_STATE, action) => {
@@ -56,44 +58,32 @@ const EventsReducer = (state = INITIAL_STATE, action) => {
         eventByIdError: action.payload
       };
 
-    case EventsActionTypes.POST.POST_EVENT_PENDING:
+    case EventsActionTypes.EDIT.EDIT_EVENT_PENDING:
       return {
         ...state,
-        isEventPosting: true
+        isEventEditing: true
       };
 
-    case EventsActionTypes.POST.POST_EVENT_SUCCESS:
+    case EventsActionTypes.EDIT.EDIT_EVENT_SUCCESS:
       return {
         ...state,
-        isEventPosting: false,
-        eventPost: action.payload
+        eventEdited: action.payload,
+        eventRequestStatus: action.payload.status,
+        isEventEditing: false
       };
 
-    case EventsActionTypes.POST.POST_EVENT_ERROR:
+    case EventsActionTypes.EDIT.EDIT_EVENT_ERROR:
       return {
         ...state,
-        isEventPosting: false,
-        eventPostError: action.payload
+        eventEditedError: action.payload,
+        eventRequestStatus: action.payload.status,
+        isEventEditing: false
       };
 
-    case EventsActionTypes.PUT.PUT_EVENT_PENDING:
+    case EventsActionTypes.CLEAR_REQUEST_STATUS:
       return {
         ...state,
-        isEventPosting: true
-      };
-
-    case EventsActionTypes.PUT.PUT_EVENT_SUCCESS:
-      return {
-        ...state,
-        isEventPosting: false,
-        eventPost: action.payload
-      };
-
-    case EventsActionTypes.PUT.PUT_EVENT_ERROR:
-      return {
-        ...state,
-        isEventPosting: false,
-        eventPostError: action.payload
+        eventRequestStatus: action.payload
       };
     default:
       return state;
