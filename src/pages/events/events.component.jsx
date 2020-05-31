@@ -11,7 +11,7 @@ import "./events.styles.scss";
 const Events = ({ getEvents, areEventsPending, events }) => {
   useEffect(() => {
     getEvents();
-  }, []);
+  }, [getEvents]);
 
   return (
     <div className="events-page-container">
@@ -34,7 +34,7 @@ const Events = ({ getEvents, areEventsPending, events }) => {
                   location,
                   feedbackList
                 }) => (
-                  <Col key={eventId} md={4}>
+                  <Col key={eventId} className="col_card" lg={3} md={6}>
                     <EventCard
                       eventId={eventId}
                       eventName={eventName}

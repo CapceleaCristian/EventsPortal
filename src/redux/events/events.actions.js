@@ -49,30 +49,32 @@ export const postEvent = (
   description,
   totalPlaces,
   placesAvailable,
-  location
+  location,
+  usersNames = []
 ) => dispatch => {
   dispatch({
-    type: EventsActionTypes.POST.POST_EVENT_PENDING
+    type: EventsActionTypes.EDIT.EDIT_EVENT_PENDING
   });
 
   axiosNoTokenRequest
-    .post("/events/", {
+    .post("/events", {
       eventName,
       eventDate,
       description,
       totalPlaces,
       placesAvailable,
-      location
+      location,
+      usersNames
     })
     .then(postEvent => {
       dispatch({
-        type: EventsActionTypes.POST.POST_EVENT_SUCCESS,
-        payload: postEvent
+        type: EventsActionTypes.EDIT.EDIT_EVENT_SUCCESS,
+        payload: { postEvent: postEvent.data, status: 201 }
       });
     })
     .catch(err => {
       dispatch({
-        type: EventsActionTypes.POST.POST_EVENT_ERROR,
+        type: EventsActionTypes.EDIT.EDIT_EVENT_ERROR,
         payload: err
       });
     });
@@ -85,10 +87,11 @@ export const putEvent = (
   description,
   totalPlaces,
   placesAvailable,
-  location
+  location,
+  usersNames = []
 ) => dispatch => {
   dispatch({
-    type: EventsActionTypes.PUT.PUT_EVENT_PENDING
+    type: EventsActionTypes.EDIT.EDIT_EVENT_PENDING
   });
 
   axiosNoTokenRequest
@@ -98,18 +101,44 @@ export const putEvent = (
       description,
       totalPlaces,
       placesAvailable,
-      location
+      location,
+      usersNames
     })
     .then(putEvent => {
       dispatch({
-        type: EventsActionTypes.PUT.PUT_EVENT_SUCCESS,
-        payload: putEvent
+        type: EventsActionTypes.EDIT.EDIT_EVENT_SUCCESS,
+        payload: { putEvent: putEvent.data, status: 200 }
       });
     })
     .catch(err => {
       dispatch({
-        type: EventsActionTypes.PUT.PUT_EVENT_ERROR,
+        type: EventsActionTypes.EDIT.EDIT_EVENT_ERROR,
         payload: err
       });
     });
 };
+
+export const addUserToEvent = eventId => dispatch => {
+  dispatch({
+    type: EventsActionTypes.POST.ADD_USER_TO_EVENT_PENDING
+  });
+  axiosNoTokenRequest
+    .post(`events/addUsers`, { eventId, usersId: [2] })
+    .then(addUsers => {
+      dispatch({
+        type: EventsActionTypes.POST.ADD_USER_TO_EVENT_SUCCESS,
+        payload: addUsers
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: EventsActionTypes.POST.ADD_USER_TO_EVENT_ERROR,
+        payload: err
+      });
+    });
+};
+
+export const clearRequestStatus = () => ({
+  type: EventsActionTypes.CLEAR_REQUEST_STATUS,
+  payload: ""
+});

@@ -5,6 +5,7 @@ import { Form } from "react-bootstrap";
 import "./default-input.styles.scss";
 
 const DefaultInput = ({
+  name,
   label,
   type,
   placeholder,
@@ -16,6 +17,7 @@ const DefaultInput = ({
       <Form.Group>
         <Form.Label>{label}</Form.Label>
         <Form.Control
+          name={name}
           onChange={onChangeHandler}
           type={type}
           placeholder={placeholder}

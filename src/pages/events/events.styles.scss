@@ -5,4 +5,9 @@
       width: 100%;
     }
   }
+  &__inner {
+    .col_card {
+      margin: 10px 0;
+    }
+  }
 }
