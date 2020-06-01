@@ -21,32 +21,34 @@ const Events = ({ getEvents, areEventsPending, events }) => {
         <Container>
           <div className="events-page-container__inner">
             <h1 style={{ textAlign: "center" }}>
-              Total events: {events.length || 0}
+              Total events: {events.length}
             </h1>
             <Row>
-              {events.map(
-                ({
-                  eventId,
-                  eventName,
-                  description,
-                  totalPlaces,
-                  placesAvailable,
-                  location,
-                  feedbackList
-                }) => (
-                  <Col key={eventId} className="col_card" lg={3} md={6}>
-                    <EventCard
-                      eventId={eventId}
-                      eventName={eventName}
-                      description={description}
-                      totalPlaces={totalPlaces}
-                      placesAvailable={placesAvailable}
-                      location={location}
-                      feedbackList={feedbackList}
-                    />
-                  </Col>
-                )
-              )}
+              {events && events.length
+                ? events.map(
+                    ({
+                      eventId,
+                      eventName,
+                      description,
+                      totalPlaces,
+                      placesAvailable,
+                      location,
+                      feedbackList
+                    }) => (
+                      <Col key={eventId} className="col_card" lg={3} md={6}>
+                        <EventCard
+                          eventId={eventId}
+                          eventName={eventName}
+                          description={description}
+                          totalPlaces={totalPlaces}
+                          placesAvailable={placesAvailable}
+                          location={location}
+                          feedbackList={feedbackList}
+                        />
+                      </Col>
+                    )
+                  )
+                : "No events!"}
             </Row>
           </div>
         </Container>

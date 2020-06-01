@@ -1,8 +1,13 @@
 import axios from "axios";
 
 const axiosNoTokenRequest = axios.create({
-  baseURL: "http://ev-reg-sys.herokuapp.com/",
+  baseURL: "https://ev-reg-sys.herokuapp.com",
   data: {}
 });
 
-export { axiosNoTokenRequest };
+const axiosAuthenticate = axios.create({
+  baseURL: "https://fast-lake-47052.herokuapp.com",
+  data: {}
+});
+
+export { axiosNoTokenRequest, axiosAuthenticate };

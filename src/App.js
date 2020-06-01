@@ -14,6 +14,7 @@ import {
   EventEdit,
   Users,
   SignUp,
+  SignIn,
   UserSingle
 } from "./pages";
 
@@ -33,6 +34,7 @@ const App = () => {
             <Route exact path="/users" component={Users} />
             <Route exact path="/users/:userId" component={UserSingle} />
             <Route exact path="/sign-up" component={SignUp} />
+            <Route exact path="/sign-in" component={SignIn} />
             <Route
               exact
               path="/my-business/events/:eventId"
