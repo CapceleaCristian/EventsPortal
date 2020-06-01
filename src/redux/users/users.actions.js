@@ -1,4 +1,4 @@
-import { axiosNoTokenRequest } from "../../axios";
+import { axiosNoTokenRequest, axiosAuthenticate } from "../../axios";
 import { UsersTypes } from "./users.types";
 
 export const getUsers = () => dispatch => {
@@ -51,6 +51,27 @@ export const signUpAction = userData => dispatch => {
     .catch(err => {
       dispatch({
         type: UsersTypes.POST.SIGN_UP_ERROR,
+        payload: err.data
+      });
+    });
+};
+
+export const signInAction = loginData => dispatch => {
+  dispatch({
+    type: UsersTypes.POST.SIGN_IN_PENDING
+  });
+
+  axiosNoTokenRequest
+    .post("/authenticate/", loginData)
+    .then(signUp => {
+      dispatch({
+        type: UsersTypes.POST.SIGN_IN_SUCCESS,
+        payload: { signUp: signUp.data, status: 200 }
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: UsersTypes.POST.SIGN_IN_ERROR,
         payload: err.data
       });
     });
