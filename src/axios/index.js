@@ -1,13 +1,16 @@
 import axios from "axios";
 
-const axiosNoTokenRequest = axios.create({
+const axiosNoTokenInstance = axios.create({
   baseURL: "https://ev-reg-sys.herokuapp.com",
   data: {}
 });
 
-const axiosAuthenticate = axios.create({
-  baseURL: "https://fast-lake-47052.herokuapp.com",
-  data: {}
+const axiosInstance = axios.create({
+  baseURL: "https://ev-reg-sys.herokuapp.com",
+  data: {},
+  headers: {
+    Authorization: localStorage.getItem("portalToken")
+  }
 });
 
-export { axiosNoTokenRequest, axiosAuthenticate };
+export { axiosNoTokenInstance, axiosInstance };

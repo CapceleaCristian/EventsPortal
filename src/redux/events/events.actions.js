@@ -1,12 +1,12 @@
 import { EventsActionTypes } from "./events.types";
-import { axiosNoTokenRequest } from "../../axios";
+import { axiosNoTokenInstance, axiosInstance } from "../../axios";
 
 export const getEvents = () => dispatch => {
   dispatch({
     type: EventsActionTypes.GET.GET_ALL_EVENTS_PENDING
   });
 
-  axiosNoTokenRequest
+  axiosNoTokenInstance
     .get("/events")
     .then(events => {
       dispatch({
@@ -27,8 +27,8 @@ export const getEventById = eventId => dispatch => {
     type: EventsActionTypes.GET.GET_EVENT_BY_ID_PENDING
   });
 
-  axiosNoTokenRequest
-    .get(`/events/${eventId}/`)
+  axiosInstance
+    .get(`/events/${eventId}`)
     .then(event => {
       dispatch({
         type: EventsActionTypes.GET.GET_EVENT_BY_ID_SUCCESS,
@@ -56,7 +56,7 @@ export const postEvent = (
     type: EventsActionTypes.EDIT.EDIT_EVENT_PENDING
   });
 
-  axiosNoTokenRequest
+  axiosInstance
     .post("/events", {
       eventName,
       eventDate,
@@ -94,7 +94,7 @@ export const putEvent = (
     type: EventsActionTypes.EDIT.EDIT_EVENT_PENDING
   });
 
-  axiosNoTokenRequest
+  axiosInstance
     .put(`/events/${eventId}/`, {
       eventName,
       eventDate,
@@ -118,12 +118,12 @@ export const putEvent = (
     });
 };
 
-export const addUserToEvent = eventId => dispatch => {
+export const addUserToEvent = (eventId, userId) => dispatch => {
   dispatch({
     type: EventsActionTypes.POST.ADD_USER_TO_EVENT_PENDING
   });
-  axiosNoTokenRequest
-    .post(`events/addUsers`, { eventId, usersId: [2] })
+  axiosNoTokenInstance
+    .post(`events/addUsers`, { eventId, usersId: [userId] })
     .then(addUsers => {
       dispatch({
         type: EventsActionTypes.POST.ADD_USER_TO_EVENT_SUCCESS,
@@ -136,6 +136,24 @@ export const addUserToEvent = eventId => dispatch => {
         payload: err
       });
     });
+};
+
+export const isUserSubscribedToEvent = (userName, eventName) => dispatch => {
+  dispatch({
+    type: EventsActionTypes.GET.IS_USER_SUBSCRIBED_TO_EVENT_PENDING
+  });
+  axiosInstance
+    .get(`/users/isUserSubscribed/${userName}/${eventName}`)
+    .then(response => {
+      dispatch({
+        type: EventsActionTypes.GET.IS_USER_SUBSCRIBED_TO_EVENT_SUCCESS,
+        payload: response.data
+      });
+    });
+
+  dispatch({
+    type: EventsActionTypes.GET.IS_USER_SUBSCRIBED_TO_EVENT_ERROR
+  });
 };
 
 export const clearRequestStatus = () => ({

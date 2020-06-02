@@ -10,8 +10,6 @@ const Users = ({ users, areUserPending, getUsers }) => {
     getUsers();
   }, [getUsers]);
 
-  console.log(users);
-
   return (
     <div className="users">
       {areUserPending ? (
@@ -19,23 +17,25 @@ const Users = ({ users, areUserPending, getUsers }) => {
       ) : (
         <div className="users__container">
           <h1 style={{ textAlign: "center" }}>
-            Total events: {users.length || 0}
+            Total events: {(users && users.length) || 0}
           </h1>
           <Container>
             <Row>
-              {users.map(
-                ({ id, user_photo, name, phoneNumber, address, email }) => (
-                  <UserCard
-                    key={id}
-                    id={id}
-                    user_photo={user_photo}
-                    name={name}
-                    phoneNumber={phoneNumber}
-                    address={address}
-                    email={email}
-                  />
-                )
-              )}
+              {users && !!users.length
+                ? users.map(
+                    ({ id, user_photo, name, phoneNumber, address, email }) => (
+                      <UserCard
+                        key={id}
+                        id={id}
+                        user_photo={user_photo}
+                        name={name}
+                        phoneNumber={phoneNumber}
+                        address={address}
+                        email={email}
+                      />
+                    )
+                  )
+                : "No users"}
             </Row>
           </Container>
         </div>

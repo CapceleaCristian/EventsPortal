@@ -1,30 +1,29 @@
-import React, { useEffect } from "react";
-import { Container } from "react-bootstrap";
-import { useParams, useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { mockNoUserImg } from "../../data";
+import { Container } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
-import { LoadingSpinner } from "../../components";
+import { mockNoUserImg } from "../../data";
 
 import { getUserById } from "../../redux/action-exporter";
 
-import "./user-single.styles.scss";
+import "./my-profile.styles.scss";
 
-const UserSingle = ({ getUserById, userById, isUserByIdPending }) => {
-  const { userId } = useParams();
+const MyProfile = ({ getUserById, userById }) => {
   const history = useHistory();
 
   useEffect(() => {
-    getUserById(userId);
-  }, [userId, getUserById]);
+    if (localStorage.hasOwnProperty("myProfile")) {
+      const ls = JSON.parse(localStorage.getItem("myProfile"));
+      getUserById(ls.id);
+    }
+  }, [getUserById]);
 
   return (
-    <div className="user-single">
-      {isUserByIdPending && userById ? (
-        <LoadingSpinner />
-      ) : (
+    <div className="my-profile">
+      {userById ? (
         <Container>
-          <div className="user-single__inner">
+          <div className="my-profile__inner">
             <div className="user-data">
               <div className="user-data__field">
                 Name: <strong>{userById.name}</strong>
@@ -66,14 +65,15 @@ const UserSingle = ({ getUserById, userById, isUserByIdPending }) => {
             </div>
           </div>
         </Container>
+      ) : (
+        "Missing Data"
       )}
     </div>
   );
 };
 
 const mapStateToProps = state => ({
-  isUserByIdPending: state.usersReducer.isUserByIdPending,
   userById: state.usersReducer.userById
 });
 
-export default connect(mapStateToProps, { getUserById })(UserSingle);
+export default connect(mapStateToProps, { getUserById })(MyProfile);

@@ -55,7 +55,7 @@ const EventEdit = ({
       setName(eventName);
       setFullTime(fullTime => ({
         ...fullTime,
-        eDate: dateSplit[0],
+        eDate: dateSplit[0].split(":").join("-"),
         eTime: dateSplit[1]
       }));
       setDescription(description);
