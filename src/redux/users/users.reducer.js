@@ -1,6 +1,9 @@
 import { UsersTypes } from "./users.types";
 
 const INITIAL_STATE = {
+  isUserLoggedIn: false,
+  myAccount: {},
+
   areUserPending: false,
   users: [],
   usersError: {},
@@ -13,11 +16,27 @@ const INITIAL_STATE = {
   userRegister: {},
   userRegisterError: {},
 
+  isPendingUserLogin: false,
+  userLogin: {},
+  userLoginError: {},
+
   userRequestStatus: 0
 };
 
 const UsersReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case UsersTypes.SET_LOGIN_STATUS:
+      return {
+        ...state,
+        isUserLoggedIn: action.payload
+      };
+
+    case UsersTypes.LOG_OUT_ACTION:
+      return {
+        ...state,
+        isUserLoggedIn: action.payload
+      };
+
     case UsersTypes.GET.GET_USERS_PENDING:
       return {
         ...state,
@@ -79,10 +98,37 @@ const UsersReducer = (state = INITIAL_STATE, action) => {
         isPendingUserRegister: false
       };
 
+    case UsersTypes.POST.SIGN_IN_PENDING:
+      return {
+        ...state,
+        isPendingUserRegister: true
+      };
+
+    case UsersTypes.POST.SIGN_IN_SUCCESS:
+      return {
+        ...state,
+        userRequestStatus: action.payload.status,
+        userLogin: action.payload,
+        isPendingUserLogin: false
+      };
+
+    case UsersTypes.POST.SIGN_IN_ERROR:
+      return {
+        ...state,
+        userLoginError: action.payload,
+        isPendingUserLogin: false
+      };
+
     case UsersTypes.CLEAR_USER_REQUEST_STATUS:
       return {
         ...state,
         userRequestStatus: action.payload
+      };
+
+    case UsersTypes.GET.SET_TO_STORE_MY_ACC:
+      return {
+        ...state,
+        myAccount: action.payload
       };
 
     default:

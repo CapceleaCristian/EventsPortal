@@ -6,7 +6,11 @@ import { FiEdit } from "react-icons/fi";
 
 import { mockImage } from "../../data";
 import { LoadingSpinner } from "../../components";
-import { getEventById, addUserToEvent } from "../../redux/action-exporter";
+import {
+  getEventById,
+  addUserToEvent,
+  isUserSubscribedToEvent
+} from "../../redux/action-exporter";
 
 import "./event-info.styles.scss";
 
@@ -14,13 +18,12 @@ const EventInfo = ({
   getEventById,
   isEventByIdPending,
   eventById,
-  addUserToEvent
+  addUserToEvent,
+  myAccount,
+  isUserSubscribedToEvent,
+  isUserGoingToEvent
 }) => {
   const { eventId } = useParams();
-
-  useEffect(() => {
-    getEventById(eventId);
-  }, [getEventById, eventId]);
 
   const {
     eventName,
@@ -30,6 +33,14 @@ const EventInfo = ({
     placesAvailable,
     location
   } = eventById;
+
+  useEffect(() => {
+    getEventById(eventId);
+  }, [getEventById, eventId, eventName]);
+
+  useEffect(() => {
+    isUserSubscribedToEvent(myAccount.name, eventName);
+  }, [isUserSubscribedToEvent, myAccount, eventName]);
 
   return (
     <div className="event-info-container">
@@ -56,9 +67,17 @@ const EventInfo = ({
                 Event location: <span>{location}</span>
               </div>
               <div className="event-info__go-to-event">
-                <Button onClick={() => addUserToEvent(eventId)}>
-                  Go To Event
-                </Button>
+                {isUserGoingToEvent ? (
+                  <Button disabled>You are subscribed to event!</Button>
+                ) : (
+                  <Button
+                    onClick={() =>
+                      addUserToEvent(eventId, myAccount && myAccount.id)
+                    }
+                  >
+                    Go To Event
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -80,9 +99,13 @@ const EventInfo = ({
 
 const mapStateToProps = state => ({
   isEventByIdPending: state.eventsReducer.isEventByIdPending,
-  eventById: state.eventsReducer.eventById
+  eventById: state.eventsReducer.eventById,
+  myAccount: state.usersReducer.myAccount,
+  isUserGoingToEvent: state.eventsReducer.isUserGoingToEvent
 });
 
-export default connect(mapStateToProps, { getEventById, addUserToEvent })(
-  EventInfo
-);
+export default connect(mapStateToProps, {
+  getEventById,
+  addUserToEvent,
+  isUserSubscribedToEvent
+})(EventInfo);

@@ -19,7 +19,7 @@ const SignUp = ({
   const history = useHistory();
   const [userData, setUserData] = useState({
     name: "",
-    phone: "",
+    phoneNumber: "",
     address: "",
     email: "",
     password: ""
@@ -27,19 +27,19 @@ const SignUp = ({
   const [showModal, setShowModal] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
-  const { name, phone, address, email, password } = userData;
+  const { name, phoneNumber, address, email, password } = userData;
 
   useEffect(
     () =>
       setButtonDisabled(
         name === "" ||
-          phone === "" ||
+          phoneNumber === "" ||
           address === "" ||
           email === "" ||
           password === "" ||
           userRequestStatus === 201
       ),
-    [name, userRequestStatus, phone, address, email, password]
+    [name, userRequestStatus, phoneNumber, address, email, password]
   );
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const SignUp = ({
         />
         <DefaultInput
           type="text"
-          name="phone"
+          name="phoneNumber"
           label="Phone"
           onChangeHandler={setUserDataHandler}
         />

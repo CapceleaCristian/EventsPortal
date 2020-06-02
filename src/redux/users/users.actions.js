@@ -1,9 +1,9 @@
-import { axiosNoTokenRequest, axiosAuthenticate } from "../../axios";
+import { axiosNoTokenInstance, axiosInstance } from "../../axios";
 import { UsersTypes } from "./users.types";
 
 export const getUsers = () => dispatch => {
   dispatch({ type: UsersTypes.GET.GET_USERS_PENDING });
-  axiosNoTokenRequest
+  axiosInstance
     .get(`/users`)
     .then(users => {
       dispatch({
@@ -19,7 +19,7 @@ export const getUsers = () => dispatch => {
 
 export const getUserById = userId => dispatch => {
   dispatch({ type: UsersTypes.GET.GET_USER_BY_ID_PENDING });
-  axiosNoTokenRequest
+  axiosInstance
     .get(`/users/${userId}`)
     .then(user => {
       dispatch({
@@ -35,12 +35,29 @@ export const getUserById = userId => dispatch => {
     });
 };
 
+export const getUserByName = name => dispatch => {
+  dispatch({ type: UsersTypes.GET.GET_USER_BY_NAME_PENDING });
+
+  axiosInstance
+    .get(`/users/name/${name}?pageNumber=0&pageSize=10&sort=desc`)
+    .then(userGet => {
+      dispatch({
+        type: UsersTypes.GET.GET_USER_BY_NAME_SUCCESS,
+        payload: userGet.data[0]
+      });
+      localStorage.setItem("myProfile", JSON.stringify(userGet.data[0]));
+    })
+    .catch(err => {
+      dispatch({ type: UsersTypes.GET.GET_USER_BY_NAME_ERROR, payload: err });
+    });
+};
+
 export const signUpAction = userData => dispatch => {
   dispatch({
     type: UsersTypes.POST.SIGN_UP_PENDING
   });
 
-  axiosNoTokenRequest
+  axiosNoTokenInstance
     .post("/users/signUp", userData)
     .then(signUp => {
       dispatch({
@@ -56,18 +73,29 @@ export const signUpAction = userData => dispatch => {
     });
 };
 
+export const setLoginStatus = status => dispatch => {
+  dispatch({
+    type: UsersTypes.SET_LOGIN_STATUS,
+    payload: status
+  });
+};
+
 export const signInAction = loginData => dispatch => {
   dispatch({
     type: UsersTypes.POST.SIGN_IN_PENDING
   });
 
-  axiosNoTokenRequest
-    .post("/authenticate/", loginData)
+  axiosNoTokenInstance
+    .post("/authenticate", loginData)
     .then(signUp => {
       dispatch({
         type: UsersTypes.POST.SIGN_IN_SUCCESS,
         payload: { signUp: signUp.data, status: 200 }
       });
+      localStorage.setItem("portalToken", signUp.data.token);
+    })
+    .then(() => {
+      dispatch(getUserByName(loginData.username));
     })
     .catch(err => {
       dispatch({
@@ -75,6 +103,22 @@ export const signInAction = loginData => dispatch => {
         payload: err.data
       });
     });
+};
+
+export const logOut = () => dispatch => {
+  localStorage.removeItem("portalToken");
+  localStorage.removeItem("myProfile");
+  dispatch({
+    type: UsersTypes.LOG_OUT_ACTION,
+    payload: false
+  });
+};
+
+export const setMyProfile = myData => dispatch => {
+  dispatch({
+    type: UsersTypes.GET.SET_TO_STORE_MY_ACC,
+    payload: myData
+  });
 };
 
 export const clearUserRequestStatus = () => dispatch => {

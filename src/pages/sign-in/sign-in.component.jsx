@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Container, Button } from "react-bootstrap";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import { DefaultInput, Toaster } from "../../components";
 import { signInAction } from "../../redux/action-exporter";
 
 import "./sign-in.styles.scss";
 
-const SignIn = ({ signInAction }) => {
+const SignIn = ({ signInAction, userRequestStatus }) => {
   const [loginData, setLoginData] = useState({
     username: "",
     password: ""

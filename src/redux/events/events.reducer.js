@@ -13,6 +13,7 @@ const INITIAL_STATE = {
   eventEdited: {},
   eventEditedError: {},
 
+  isUserGoingToEvent: false,
   eventRequestStatus: 0
 };
 
@@ -78,6 +79,12 @@ const EventsReducer = (state = INITIAL_STATE, action) => {
         eventEditedError: action.payload,
         eventRequestStatus: action.payload.status,
         isEventEditing: false
+      };
+
+    case EventsActionTypes.GET.IS_USER_SUBSCRIBED_TO_EVENT_SUCCESS:
+      return {
+        ...state,
+        isUserGoingToEvent: action.payload
       };
 
     case EventsActionTypes.CLEAR_REQUEST_STATUS:
