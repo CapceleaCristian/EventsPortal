@@ -92,6 +92,12 @@ const EventsReducer = (state = INITIAL_STATE, action) => {
         ...state,
         eventRequestStatus: action.payload
       };
+
+    case EventsActionTypes.POST.ADD_USER_TO_EVENT_SUCCESS:
+      return {
+        ...state,
+        isUserGoingToEvent: true
+      };
     default:
       return state;
   }
